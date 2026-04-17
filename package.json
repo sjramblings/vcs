@@ -1,0 +1,52 @@
+{
+  "name": "vcs",
+  "version": "1.0.0",
+  "description": "AWS-native hierarchical context database for AI agents. Implements OpenViking's L0/L1/L2 tiered summarisation patterns on DynamoDB + S3 + Bedrock + Lambda.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit -p tsconfig.src.json",
+    "synth": "cdk synth",
+    "test": "vitest run --reporter=verbose --exclude tests/smoke/**",
+    "test:coverage": "vitest run --coverage --exclude tests/smoke/**",
+    "test:e2e": "vitest run tests/smoke --reporter=verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjramblings/vcs.git"
+  },
+  "keywords": ["ai-agents", "context-database", "hierarchical", "aws", "bedrock", "cdk", "openviking"],
+  "author": "Steve Jones",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sjramblings/vcs/issues"
+  },
+  "homepage": "https://github.com/sjramblings/vcs#readme",
+  "dependencies": {
+    "@aws-cdk/aws-bedrock-agentcore-alpha": "2.246.0-alpha.0",
+    "@aws-lambda-powertools/logger": "^2.31.0",
+    "@aws-lambda-powertools/metrics": "^2.31.0",
+    "@aws-lambda-powertools/tracer": "^2.31.0",
+    "@aws-sdk/client-api-gateway": "^3.1014.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.1013.0",
+    "@aws-sdk/client-dynamodb": "^3.1012.0",
+    "@aws-sdk/client-s3": "^3.1012.0",
+    "@aws-sdk/client-s3vectors": "^3.1012.0",
+    "@aws-sdk/client-sqs": "^3.1012.0",
+    "@aws-sdk/client-ssm": "^3.1012.0",
+    "@aws-sdk/lib-dynamodb": "^3.1012.0",
+    "aws-cdk-lib": "^2.246.0",
+    "constructs": "^10.5.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.161",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.0",
+    "aws-cdk": "^2.1112.0",
+    "esbuild": "^0.27.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

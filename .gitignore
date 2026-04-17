@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# CDK output
+cdk.out/
+
+# AWS config
+.aws/
+
+# Compiled JS (except config files)
+*.js
+!vitest.config.js
+!cdk.json
+!tests/canaries/*.js
+
+# Declaration files
+*.d.ts
+
+# Coverage
+coverage/
+
+# OS files
+.DS_Store
+
+# Environment
+.env
+.env.*
+.claude/worktrees/
+
+# GSD Planning
+.planning/
+specs/

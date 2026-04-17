@@ -1,0 +1,24 @@
+{
+  "name": "vcs-cli",
+  "type": "module",
+  "main": "src/index.ts",
+  "private": true,
+  "scripts": {
+    "test": "bun test",
+    "dev": "bun run src/index.ts",
+    "build": "bun run build.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
+    "@mozilla/readability": "^0.6.0",
+    "commander": "^14.0.3",
+    "linkedom": "^0.18.12",
+    "unpdf": "^1.4.0"
+  }
+}

@@ -1,0 +1,55 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing k6..."
+      - curl -sS https://dl.k6.io/key.gpg | gpg --dearmor -o /etc/apt/keyrings/k6-archive-keyring.gpg
+      - echo "deb [signed-by=/etc/apt/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | tee /etc/apt/sources.list.d/k6.list
+      - apt-get update -qq && apt-get install -y -qq k6
+      - echo "Installing Bun..."
+      - curl -fsSL https://bun.sh/install | bash
+      - export PATH="$HOME/.bun/bin:$PATH"
+      - bun install --frozen-lockfile
+      - mkdir -p /tmp/test-results/functional /tmp/test-results/performance
+
+  pre_build:
+    commands:
+      - echo "Resolving API key value from key ID..."
+      - export VCS_API_KEY=$(aws apigateway get-api-key --api-key $VCS_API_KEY --include-value --query 'value' --output text)
+      - echo "Seeding test fixtures..."
+      - $HOME/.bun/bin/bun run tests/eval/seed.ts
+      - export EVAL_START=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+
+  build:
+    commands:
+      - echo "Running functional test suites..."
+      - k6 run tests/eval/suites/01-health.ts
+      - k6 run tests/eval/suites/02-ingestion.ts
+      - k6 run tests/eval/suites/03-filesystem.ts
+      - k6 run tests/eval/suites/04-search.ts
+      - k6 run tests/eval/suites/05-sessions.ts
+      - k6 run tests/eval/suites/06-memory.ts
+      - echo "Running async flow + edge case suites..."
+      - k6 run tests/eval/suites/07-async-flows.ts
+      - k6 run tests/eval/suites/08-edge-cases.ts
+
+  post_build:
+    commands:
+      - echo "Collecting AWS metrics..."
+      - export EVAL_END=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+      - $HOME/.bun/bin/bun run tests/eval/collect-metrics.ts --start "$EVAL_START" --end "$EVAL_END"
+      - echo "Tearing down test fixtures..."
+      - $HOME/.bun/bin/bun run tests/eval/teardown.ts
+
+reports:
+  vcs-eval-functional:
+    files:
+      - "**/*.xml"
+    base-directory: "/tmp/test-results/functional"
+    file-format: JUNITXML
+  vcs-eval-performance:
+    files:
+      - "**/*.xml"
+    base-directory: "/tmp/test-results/performance"
+    file-format: JUNITXML
